@@ -1,5 +1,5 @@
 // Dans l'array toDo un valeur true signifie que cette action est accomplie, une valeur false signifie qu'elle est à faire
-let notesJSON = [
+let notesJSON = `[
 	{
 		"titre": "Notes Javascript",
 		"texte": "Une méthode est une fonction appartenant à un objet",
@@ -17,34 +17,100 @@ let notesJSON = [
 		"couleur": "vert",
 		"dateRappel": "null"
 	}
-]
+]`
 class Note{
-	constructor(titre,texte,date,couleur,dateRappel){
-		this._titre=titre;
-		this._date=date;
-		this._texte=texte;
-		this._couleur=couleur;
-		this._dateRappel=dateRappel;
+	constructor(titre,date,couleur,dateRappel){
+		if(typeof titre==='string'){this._titre=titre;}
+		if(typeof date==='string'){this._date=date;}
+		if(typeof couleur==='string'){this._couleur=couleur;}
+		if(typeof dateRappel==='string'){this._dateRappel=dateRappel;}
 	}
 	get titre(){
-		return this.prix;
-	}
-	set titre(newTitre){
-		this._titre=newTitre;
+		return this._titre;
 	}
 	get date(){
-		return this.date;
+		return this._date;
 	}
 	get couleur(){
-	return this.couleur;
+	return this._couleur;
 	}
 	get dateRappel(){
-		return this.dateRappel;
+		return this._dateRappel;
+	}
+	set titre(newTitre){
+		if(typeof newTitre==='string'){
+		this._titre=newTitre;
+		}
+	}
+	set date(newDate){
+		if(typeof newDate==='string'){
+		this._date=newDate;
+	}
+	}
+	set couleur(newCouleur){
+		if(typeof newCouleur==='string'){
+		this._couleur=newCouleur;
+		}
+	}
+	set dateRappel(newDateRappel){
+		if(typeof newDateRappel==='string'){
+		this._dateRappel=newDateRappel;
+		}
+	}
+}
+class TextNote extends Note{
+	constructor(titre,texte,date,couleur,dateRappel){
+		super(titre,date,couleur,dateRappel);
+		if(typeof texte==='string'){
+			this._texte=texte;
+		}
+	}
+	get texte(){
+		return this._texte;
+	}
+	set texte(newTexte){
+		if(typeof newTexte==='string'){
+			this._texte=newTexte;
+		}
+	}
+}
+class CheckListNote extends Note{
+	constructor(titre,toDo,date,couleur,dateRappel){
+		super(titre,date,couleur,dateRappel);
+		if(Array.isArray(toDo)){
+			this._toDo=toDo;
+		}
+	}
+	get toDo(){
+		return this._toDo;
+	}
+	set toDo(newToDo){
+		if(Array.isArray(newToDo)){
+			this._toDo=newToDo;
+		}
 	}
 }
 
-notesArray=[];
-notesJSON.forEach(function(element){
-	notesArray.push(new Note(element.titre,element.texte,element.date,element.couleur,element.dateRappel));
-})
-console.log(notesArray[1]);
+let notesParsedArray=JSON.parse(notesJSON);
+
+/*notesJSON.forEach(function(element){
+	notesArray.unshift(
+		if(element.texte=true){
+		new TextNote(element.titre,element.texte,element.date,element.couleur,element.dateRappel);
+	}		else if(element.checkList=true){
+		new CheckList(element.titre,element.toDo,element.date,element.couleur,element.dateRappel);
+	}
+
+);*/
+let notesArray=[];
+notesParsedArray.forEach(function(element) {
+	if(element.toDo!==undefined){
+		notesArray.unshift(new CheckListNote(element.titre,element.toDo,element.date,element.couleur,element.dateRappel));
+		console.log(element.toDo);
+	}else if(element.texte!==undefined){
+		notesArray.unshift(new TextNote(element.titre,element.texte,element.date,element.couleur,element.dateRappel));
+		console.log(element.texte)
+	}
+	
+});
+
